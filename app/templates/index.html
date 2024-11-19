@@ -1,0 +1,92 @@
+<!-- app/templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summarization</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Custom spinner styling */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #3490dc;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-4">Summarize Text</h1>
+        <form id="summarizeForm">
+            <div class="mb-4">
+                <label class="block text-gray-700" for="text">Enter Text</label>
+                <textarea id="text" name="text" rows="5" class="w-full px-3 py-2 border rounded-lg" required></textarea>
+            </div>
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-lg">Summarize</button>
+        </form>
+
+        <!-- Loading spinner -->
+        <div id="loading" class="hidden flex items-center justify-center mt-4">
+            <div class="spinner"></div>
+        </div>
+
+        <div id="result" class="mt-4 hidden">
+            <div class="p-4 bg-green-100 border-l-4 border-green-500 rounded">
+                <h2 class="font-bold text-green-700">Summary:</h2>
+                <p id="summaryText" class="mt-2 text-green-800"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('summarizeForm');
+        const resultDiv = document.getElementById('result');
+        const summaryText = document.getElementById('summaryText');
+        const loading = document.getElementById('loading');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            resultDiv.classList.add('hidden'); // Hide result
+            loading.classList.remove('hidden'); // Show spinner
+            
+            const text = form.text.value;
+
+            try {
+                const response = await fetch('/summarize', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ text })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    summaryText.textContent = data.summary;
+                    resultDiv.classList.remove('hidden');
+                } else {
+                    alert('Failed to summarize. Please try again. Make sure your text has at least 10 characters.');
+                }
+            } catch (error) {
+                alert('An error occurred. Please try again later.');
+            } finally {
+                loading.classList.add('hidden'); // Hide spinner
+            }
+        });
+    </script>
+</body>
+</html>

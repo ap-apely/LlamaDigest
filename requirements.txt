@@ -1,0 +1,10 @@
+fastapi[all]
+sqlalchemy
+rich
+pyjwt
+passlib
+bcrypt
+omegaconf
+hydra-core
+llama-cpp-python
+aiosqlite
