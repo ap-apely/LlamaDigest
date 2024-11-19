@@ -61,7 +61,7 @@
 
 3. **Run the Application**  
    ```bash
-   python main.py
+   python app/main.py
    ```
 
 4. **Access the API**  
@@ -73,7 +73,7 @@
 LlamaDigest uses OAuth2 with JWT for secure API access.  
 
 ### Obtain a Token  
-1. Use the `/token` endpoint with your credentials to get a JWT token.  
+1. Use the `/login` endpoint with your credentials to get a JWT token.  
 2. Include the token in the `Authorization` header for secured endpoints:  
    ```
    Authorization: Bearer <your_token>
